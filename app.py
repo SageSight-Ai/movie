@@ -22,6 +22,13 @@ def generate_video(image_urls):
         response = requests.get(url)
         image = Image.open(BytesIO(response.content))
         image_array = np.array(image)
+        
+        # Convert image array to RGB mode if necessary
+        if image_array.ndim == 2:
+            image_array = np.repeat(image_array[:, :, np.newaxis], 3, axis=2)
+        elif image_array.shape[2] == 4:
+            image_array = image_array[:, :, :3]
+        
         image_clip = ImageClip(image_array)  # Pass NumPy array directly to ImageClip
         image_clips.append(image_clip.set_duration(3))  # Set duration for each clip to 3 seconds
 
@@ -55,3 +62,5 @@ def generate_video_api():
         return video_content, 200, {'Content-Type': 'video/mp4'}
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+
