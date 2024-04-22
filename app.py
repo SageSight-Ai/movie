@@ -15,8 +15,14 @@ def add_transitions(clip_list):
     transition_clips = [clip.fadein(transition_duration).fadeout(transition_duration) for clip in clip_list]
     return transition_clips
 
-# Function to generate video from image URLs
-def generate_video(image_urls):
+@app.route('/generate_video', methods=['POST'])
+def generate_video():
+    # Read image URLs from request
+    image_urls = request.json.get('image_urls', [])
+
+    # Remove any whitespace characters from the URLs
+    image_urls = [url.strip() for url in image_urls]
+
     # Download images and create list of image clips
     image_clips = []
     for url in image_urls:
@@ -32,24 +38,15 @@ def generate_video(image_urls):
     # Concatenate clips to create the final video
     video_clip = concatenate_videoclips(transition_clips, method="compose")
 
-    # Define output file path
-    output_file = f"output_video_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.mp4"
-    output_path = os.path.join("output_videos", output_file)
+    # Generate unique filename for the video based on current timestamp
+    timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+    video_filename = f"output_video_{timestamp}.mp4"
+    video_path = os.path.join("videos", video_filename)
 
     # Write the video file
-    video_clip.write_videofile(output_path, fps=24)
+    video_clip.write_videofile(video_path, fps=24)
 
-    return output_path
+    # Get the absolute URL for the video file
+    video_url = request.url_root + video_path
 
-@app.route('/generate_video', methods=['POST'])
-def generate_video_api():
-    if 'image_urls' not in request.json:
-        return jsonify({"error": "image_urls field missing in request body"}), 400
-
-    image_urls = request.json['image_urls']
-
-    # Generate video from image URLs
-    video_path = generate_video(image_urls)
-
-    return jsonify({"video_url": video_path}), 200
-
+    return jsonify({'video_url': video_url})
