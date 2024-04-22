@@ -47,3 +47,6 @@ def get_dropbox_link(file_path):
     dbx = dropbox.Dropbox(DROPBOX_ACCESS_TOKEN)
     shared_link_metadata = dbx.sharing_create_shared_link(file_path)
     return shared_link_metadata.url
+
+if __name__ == "__main__":
+    app.run(debug=True)
