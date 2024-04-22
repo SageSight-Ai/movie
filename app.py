@@ -5,6 +5,7 @@ from PIL import Image
 import numpy as np
 from io import BytesIO
 import os
+from datetime import datetime
 
 app = Flask(__name__)
 
@@ -14,7 +15,7 @@ def add_transitions(clip_list):
     transition_clips = [clip.fadein(transition_duration).fadeout(transition_duration) for clip in clip_list]
     return transition_clips
 
-# Function to generate video from image URLs and return video output URL
+# Function to generate video from image URLs
 def generate_video(image_urls):
     # Download images and create list of image clips
     image_clips = []
@@ -31,24 +32,24 @@ def generate_video(image_urls):
     # Concatenate clips to create the final video
     video_clip = concatenate_videoclips(transition_clips, method="compose")
 
-    # Write the video file
-    output_file = "output_video.mp4"
-    video_clip.write_videofile(output_file, fps=24)
+    # Define output file path
+    output_file = f"output_video_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.mp4"
+    output_path = os.path.join("output_videos", output_file)
 
-    return output_file
+    # Write the video file
+    video_clip.write_videofile(output_path, fps=24)
+
+    return output_path
 
 @app.route('/generate_video', methods=['POST'])
-def handle_generate_video():
-    data = request.json
-    image_urls = data.get('image_urls', [])
-    if not image_urls:
-        return jsonify({"error": "No image URLs provided"}), 400
-    
-    # Generate video
-    output_file = generate_video(image_urls)
-    
-    # Construct absolute URL for the video output file
-    output_url = request.host_url + output_file
+def generate_video_api():
+    if 'image_urls' not in request.json:
+        return jsonify({"error": "image_urls field missing in request body"}), 400
 
-    return jsonify({"output_url": output_url}), 200
+    image_urls = request.json['image_urls']
+
+    # Generate video from image URLs
+    video_path = generate_video(image_urls)
+
+    return jsonify({"video_url": video_path}), 200
 
