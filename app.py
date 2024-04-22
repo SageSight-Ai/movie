@@ -49,6 +49,10 @@ def generate_video(image_urls):
     # Return the BytesIO object containing the video content
     return video_buffer.getvalue()
 
+@app.route('/', methods=['GET'])
+def root():
+    return 'Welcome to the video generation API!'
+
 @app.route('/generate_video', methods=['POST'])
 def generate_video_api():
     try:
@@ -63,4 +67,6 @@ def generate_video_api():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-
+# Turn off debug mode for production
+if __name__ == '__main__':
+    app.run(debug=False, host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))
