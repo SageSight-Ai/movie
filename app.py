@@ -54,7 +54,7 @@ def generate_video(image_urls):
 
 # Function to upload video to Dropbox
 def upload_to_dropbox(video_path):
-    ACCESS_TOKEN = 'sl.B0BE63V-RJBv-oAwv1cJdfb56ddhNVYv-vmtJoPqzSjUa1ighUdeP4kuOnXUdLuL8txEZl7r5z2D12UOTufiHC5h2_UkSXW2j0kcSmiTKV07YlLtm2G4YBeXJ1BlJT71_EKEb0oU-PFviu67BUNt-UE'  # Your Dropbox access token
+    ACCESS_TOKEN = 'sl.B0CBrRFT1dVfP7QYBJXhQOZOSF0LWF8WFKhgab5FmNWsJAta_9-bOyTakJ-ZEW8ZDKxqP4wTHJbVeihRg5PCqJexmW4d6suvG-5c6rEfoQ5Pdz-sjPlDd5hSsaDSTqyuatVMHIzidHLdFVEKHUUYDuk'  # Your Dropbox access token
     dbx = dropbox.Dropbox(ACCESS_TOKEN)
     # Upload video to Dropbox
     try:
