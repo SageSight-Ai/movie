@@ -1,6 +1,7 @@
-Flask
+fastapi
+uvicorn
 moviepy
-numpy
-requests
-gunicorn
 dropbox
+pillow
+requests
+numpy
