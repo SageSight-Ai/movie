@@ -5,3 +5,4 @@ dropbox
 pillow
 requests
 numpy
+gunicorn
